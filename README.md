@@ -5,7 +5,7 @@
 
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![Kotlin](https://img.shields.io/badge/Kotlin-2.2.0-purple.svg)](https://kotlinlang.org)
-[![TabooLib](https://img.shields.io/badge/TabooLib-6.2.4-green.svg)](https://taboolib.org)
+[![TabooLib](https://img.shields.io/badge/TabooLib-6.3.0--afd75a7-green.svg)](https://taboolib.org)
 [![Version](https://img.shields.io/badge/version-2.0.0--beta-orange.svg)](https://github.com/BingZi-233/BilibiliVideo)
 
 *让玩家在游戏内直接完成 B 站账号绑定、三连检测、奖励领取等操作*
@@ -18,7 +18,7 @@
 
 ## 📖 项目简介
 
-**BilibiliVideo** 是一个基于 TabooLib 6.2.4 框架开发的 Minecraft 服务器插件，为服务器提供完整的哔哩哔哩平台集成能力。每个玩家可以独立登录自己的 B 站账号，在游戏内完成视频三连检测、领取奖励等互动功能。
+**BilibiliVideo** 是一个基于 TabooLib 6.3.0-afd75a7 框架开发的 Minecraft 服务器插件，为服务器提供完整的哔哩哔哩平台集成能力。每个玩家可以独立登录自己的 B 站账号，在游戏内完成视频三连检测、领取奖励等互动功能。
 
 ### 🎯 核心亮点
 
@@ -90,7 +90,7 @@
 |------|----------|
 | **Minecraft 服务端** | Bukkit/Spigot/Paper (推荐 1.12+) |
 | **Java** | JRE 8 或更高版本 |
-| **TabooLib** | 6.2.4+ (自动加载) |
+| **TabooLib** | 6.3.0-afd75a7 (自动加载) |
 | **数据库** | SQLite (默认) 或 MySQL 5.7+ |
 
 ### 📥 安装步骤
@@ -309,7 +309,7 @@ reward:
 | 技术 | 版本 | 用途 |
 |------|------|------|
 | **Kotlin** | 2.2.0 | 主开发语言 |
-| **TabooLib** | 6.2.4 | 插件开发框架 |
+| **TabooLib** | 6.3.0-afd75a7 | 插件开发框架 |
 | **Gradle** | Kotlin DSL | 构建工具 |
 
 ### 数据库层

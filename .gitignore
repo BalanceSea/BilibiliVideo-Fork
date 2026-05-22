@@ -28,5 +28,6 @@ error.log
 openspec/
 AGENTS.md
 CLAUDE.md
+.claude/
 .kotlin
 .code-review-graph
