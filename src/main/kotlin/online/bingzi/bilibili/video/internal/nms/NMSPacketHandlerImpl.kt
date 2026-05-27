@@ -26,10 +26,6 @@ import java.util.concurrent.ConcurrentHashMap
 @Suppress("unused")
 class NMSPacketHandlerImpl : NMSPacketHandler() {
 
-    init {
-        logStartupProbe()
-    }
-
     override fun sendSlotItem(player: Player, slot: Int, item: ItemStack) {
         val nmsItem = asNMSCopy(item)
         val packet = createSetSlotPacket(windowId = 0, slot = slot, nmsItem = nmsItem)
@@ -635,6 +631,10 @@ class NMSPacketHandlerImpl : NMSPacketHandler() {
     private val warnedKeys = ConcurrentHashMap.newKeySet<String>()
     private val resolvedCtorCache = ConcurrentHashMap<String, NMSReflectionToolkit.ResolvedCtor>()
     private val startupProbeLogged = java.util.concurrent.atomic.AtomicBoolean(false)
+
+    init {
+        logStartupProbe()
+    }
 
     companion object {
         /**
