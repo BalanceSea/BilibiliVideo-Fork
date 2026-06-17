@@ -169,7 +169,7 @@ class NMSPacketHandlerImpl : NMSPacketHandler() {
      * 顺序：
      * 1. 参数名 / Record component name → ArgRole 字典
      * 2. 类型 + Optional 泛型识别
-     * 3. int 队列 [windowId, stateId, slot] 兜底
+     * 3. int 队列按构造函数形状兜底：旧版 [windowId, slot]，新版 [windowId, stateId, slot]
      */
     private fun buildArgsForSetSlot(
         ctor: Constructor<*>,
@@ -182,7 +182,7 @@ class NMSPacketHandlerImpl : NMSPacketHandler() {
         val paramTypes = ctor.parameterTypes
         val parameters = ctor.parameters
         val recordRoles = recordRolesFor(ctor.declaringClass, paramTypes.size)
-        val intQueue = ArrayDeque(listOf(windowId, stateId, slot))
+        val intQueue = ArrayDeque(setSlotIntFallbackValues(paramTypes, windowId, stateId, slot))
         val args = mutableListOf<Any>()
 
         for (i in paramTypes.indices) {
@@ -199,6 +199,11 @@ class NMSPacketHandlerImpl : NMSPacketHandler() {
             args.add(arg)
         }
         return args.toTypedArray()
+    }
+
+    private fun setSlotIntFallbackValues(paramTypes: Array<Class<*>>, windowId: Int, stateId: Int, slot: Int): List<Int> {
+        val intCount = paramTypes.count { it == Int::class.javaPrimitiveType || it == Int::class.java }
+        return if (intCount >= 3) listOf(windowId, stateId, slot) else listOf(windowId, slot)
     }
 
     private fun resolveSetSlotByType(
