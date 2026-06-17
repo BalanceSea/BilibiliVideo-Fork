@@ -19,12 +19,12 @@ import taboolib.common.env.RuntimeDependency
         transitive = false
     ),
     RuntimeDependency(
-        value = "!com.squareup.okhttp3:okhttp:4.12.0",
-        test = "!okhttp3.OkHttpClient"
+        value = "!com.squareup.okio:okio-jvm:3.6.0",
+        transitive = false
     ),
     RuntimeDependency(
-        value = "!com.squareup.okio:okio-jvm:3.6.0",
-        test = "!okio.Buffer"
+        value = "!com.squareup.okhttp3:okhttp:4.12.0",
+        transitive = false
     ),
     RuntimeDependency(
         value = "!com.google.code.gson:gson:2.11.0",
