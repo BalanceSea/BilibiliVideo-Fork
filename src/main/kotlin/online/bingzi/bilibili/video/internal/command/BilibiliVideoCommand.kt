@@ -16,8 +16,8 @@ import taboolib.common.platform.command.CommandHeader
 import taboolib.common.platform.command.PermissionDefault
 import taboolib.common.platform.command.mainCommand
 import taboolib.common.platform.command.subCommand
-import taboolib.common.platform.function.submit
 import taboolib.expansion.createHelper
+import taboolib.platform.util.submit
 import java.util.UUID
 
 /**
@@ -49,17 +49,17 @@ object BilibiliVideoCommand {
     @CommandBody(permission = "bilibili.video.use", permissionDefault = PermissionDefault.TRUE)
     val qrcode = subCommand {
         execute<Player> { player, _, _ ->
-            submit(async = true) {
+            player.submit(async = true) {
                 val result = QrLoginService.startLogin(player)
                 if (!result.success || result.qrUrl == null) {
                     val message = result.message
-                    submit {
+                    player.submit(async = false) {
                         player.sendMessage("§c[BV] $message")
                     }
                     return@submit
                 }
                 val qrUrl = result.qrUrl
-                submit {
+                player.submit(async = false) {
                     // 使用虚拟物品发送二维码地图到主手
                     VirtualItemSession.sendVirtualItem(player, qrUrl)
                     player.sendMessage("§a[BV] 已为你生成二维码，请使用手机扫码完成绑定。")
@@ -74,11 +74,11 @@ object BilibiliVideoCommand {
     @CommandBody(permission = "bilibili.video.use", permissionDefault = PermissionDefault.TRUE)
     val status = subCommand {
         execute<Player> { player, _, _ ->
-            submit(async = true) {
+            player.submit(async = true) {
                 val binding = BindingService.getBoundAccount(player.uniqueId.toString())
                 val credential = CredentialService.getCredentialInfo(player)
 
-                submit {
+                player.submit(async = false) {
                     if (binding == null) {
                         player.sendMessage("§c[BV] 你还没有绑定任何 B 站账号。")
                     } else {
@@ -124,9 +124,9 @@ object BilibiliVideoCommand {
                 if (!ensureConfiguredBvid(player, bvid)) {
                     return@execute
                 }
-                submit(async = true) {
+                player.submit(async = true) {
                     val result = CredentialService.checkTripleByPlayer(player, bvid)
-                    submit {
+                    player.submit(async = false) {
                         if (!result.success || result.tripleStatus == null) {
                             player.sendMessage("§c[BV] ${result.message}")
                             return@submit
@@ -162,9 +162,9 @@ object BilibiliVideoCommand {
                 if (!ensureConfiguredBvid(player, bvid)) {
                     return@execute
                 }
-                submit(async = true) {
+                player.submit(async = true) {
                     val result = RewardService.rewardByPlayerAndBvid(player, bvid)
-                    submit {
+                    player.submit(async = false) {
                         if (!result.success) {
                             player.sendMessage("§c[BV] ${result.message}")
                             return@submit

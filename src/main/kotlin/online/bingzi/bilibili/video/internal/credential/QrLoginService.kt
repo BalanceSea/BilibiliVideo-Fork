@@ -12,8 +12,8 @@ import online.bingzi.bilibili.video.internal.ui.VirtualItemSession
 import org.bukkit.Bukkit
 import org.bukkit.entity.Player
 import taboolib.common.platform.function.info
-import taboolib.common.platform.function.submit
 import taboolib.common.platform.function.warning
+import taboolib.platform.util.submit
 import java.io.IOException
 import java.util.*
 import java.util.concurrent.*
@@ -158,7 +158,7 @@ object QrLoginService {
 
         // 恢复玩家背包（移除虚拟二维码物品）
         Bukkit.getPlayer(playerUuid)?.let { player ->
-            submit {
+            player.submit(async = false) {
                 VirtualItemSession.restoreItem(player)
             }
         } ?: run {
@@ -428,9 +428,9 @@ object QrLoginService {
      * 在主线程上给玩家发送提示消息（如果仍在线）。
      */
     private fun notifyPlayer(session: QrSession, message: String) {
-        submit(async = false) {
-            val player = Bukkit.getPlayer(session.playerUuid)
-            if (player != null && player.isOnline) {
+        val player = Bukkit.getPlayer(session.playerUuid) ?: return
+        player.submit(async = false) {
+            if (player.isOnline) {
                 player.sendMessage(message)
             }
         }
