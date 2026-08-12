@@ -705,7 +705,7 @@ src/main/kotlin/online/bingzi/bilibili/video/
 - [Ktorm](https://github.com/kotlin-orm/ktorm) - 轻量级 Kotlin ORM 框架
 - [OkHttp](https://github.com/square/okhttp) - 高效的 HTTP 客户端
 - [SocialSisterYi/bilibili-API-collect](https://github.com/SocialSisterYi/bilibili-API-collect) - B 站 API 文档收集
-- [BiliBiliVideo](https://github.com/YsGqHY/BilibiliVideo)
+- [BiliBiliVideo](https://github.com/YsGqHY/BilibiliVideo) - 原插件仓库
 - [ZXing](https://github.com/zxing/zxing) - 二维码生成库
 ---
 
