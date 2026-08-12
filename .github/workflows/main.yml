@@ -258,6 +258,7 @@ jobs:
             /bv status              # 查看账号绑定状态
             /bv triple <bvid>       # 检测视频三连状态（点赞、投币、收藏）
             /bv reward <bvid>       # 领取三连奖励
+            /bv menu                # 打开视频列表
             ```
 
             ## 📋 系统要求
@@ -270,8 +271,8 @@ jobs:
 
             | 资源 | 链接 |
             |------|------|
-            | 🐛 问题反馈 | [Issues](https://github.com/BingZi-233/BilibiliVideo/issues) |
-            | 💬 讨论交流 | [Discussions](https://github.com/BingZi-233/BilibiliVideo/discussions) |
+            | 🐛 问题反馈 | [Issues](https://github.com/BalanceSea/BilibiliVideo/issues) |
+            | 💬 讨论交流 | [Discussions](https://github.com/BalanceSea/BilibiliVideo/discussions) |
 
             ---
 
@@ -279,7 +280,7 @@ jobs:
 
             **如果这个插件对你有帮助，请给个 ⭐ Star 支持一下！**
 
-            [报告问题](https://github.com/BingZi-233/BilibiliVideo/issues/new/choose) | [请求功能](https://github.com/BingZi-233/BilibiliVideo/issues/new?labels=enhancement) | [加入讨论](https://github.com/BingZi-233/BilibiliVideo/discussions)
+            [报告问题](https://github.com/BalanceSea/BilibiliVideo/issues/new/choose) | [请求功能](https://github.com/BalanceSea/BilibiliVideo/issues/new?labels=enhancement) | [加入讨论](https://github.com/BalanceSea/BilibiliVideo/discussions)
 
             </div>
           draft: false
