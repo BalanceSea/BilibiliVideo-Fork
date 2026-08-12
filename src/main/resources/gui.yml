@@ -1,0 +1,73 @@
+
+
+Title: "&fBiliBiliVideo &7| &f三连奖励"
+#不要填写过多视频占位符 请求过多B站会风控！！！
+#不要填写过多视频占位符 请求过多B站会风控！！！
+#不要填写过多视频占位符 请求过多B站会风控！！！
+Layout:
+  - "####i####"
+  - "#1111111#"
+  - "#p#####n#"
+
+Icons:
+  # 隔板
+  '#':
+    display:
+      #物品名称
+      name: "&7▪ 我只是个隔板"
+      #物品材质
+      mats: "gray_stained_glass_pane"
+      #物品CustomModelData
+      cmd: '-1'
+      #物品描述
+      lore:
+        - "&7爱上一只小猪?"
+
+  # BiliBiliVideo
+  '1':
+    type: VIDEO
+    display:
+      name: "⭐&6 %bv%"
+      mats: "gold_ingot"
+      lore:
+        - "&8&m                        "
+        - "📺&b&l 三连状态"
+        - " &7▪ 点赞: &f%status_like%"
+        - " &7▪ 收藏: &f%status_favorite%"
+        - " &7▪ 投币: &f%status_coin%"
+        - " &7▪ 三连: &f%status%"
+        - "&8&m                        "
+        - "🎁&b&l 三连奖励"
+        - " &7▪ %description%"
+        - "&8&m                        "
+        - "✅&b&l 奖励状态"
+        - " &7▪ %claim_status%"
+        - "&8&m                        "
+        - "✔&a&l 左键领取奖励 &7| &r🔗&b&l 右键查看视频链接"
+        - "&8&m                        "
+  'p':
+    type: PREVIOUS
+    display:
+      name: "&f上一页"
+      mats: "paper"
+      lore:
+        - "&7点击前往上一页"
+        - "&7当前页: &e%page%"
+
+  'n':
+    type: NEXT
+    display:
+      name: "&f下一页"
+      mats: "paper"
+      lore:
+        - "&7点击前往下一页"
+        - "&7当前页: &e%page%"
+  # 玩家信息
+  'i':
+    display:
+      name: "📋&b&l BiliBiliVideo &7| &f三连奖励"
+      mats: "player_head"
+      lore:
+        - "&8&m                        "
+        - " &7点击查看三连奖励"
+        - "&8&m                        "

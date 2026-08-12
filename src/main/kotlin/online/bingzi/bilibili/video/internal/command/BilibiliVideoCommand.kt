@@ -1,13 +1,19 @@
 package online.bingzi.bilibili.video.internal.command
 
+import online.bingzi.bilibili.video.internal.config.GuiConfigManager
 import online.bingzi.bilibili.video.internal.config.RewardConfigManager
 import online.bingzi.bilibili.video.internal.credential.QrLoginService
+import online.bingzi.bilibili.video.internal.gui.VideoGui
+import online.bingzi.bilibili.video.internal.gui.VideoGui.openVideoMenu
 import online.bingzi.bilibili.video.internal.repository.BoundAccountRepository
 import online.bingzi.bilibili.video.internal.service.BindingService
 import online.bingzi.bilibili.video.internal.service.CredentialService
 import online.bingzi.bilibili.video.internal.service.RewardKetherExecutor
 import online.bingzi.bilibili.video.internal.service.RewardService
 import online.bingzi.bilibili.video.internal.ui.VirtualItemSession
+import online.bingzi.bilibili.video.internal.util.MessageArg
+import online.bingzi.bilibili.video.internal.util.MessageUtil.sendParseLang
+import online.bingzi.bilibili.video.internal.util.MessageUtil.sendPrefixedMessage
 import org.bukkit.Bukkit
 import org.bukkit.entity.Player
 import taboolib.common.platform.ProxyCommandSender
@@ -17,6 +23,8 @@ import taboolib.common.platform.command.PermissionDefault
 import taboolib.common.platform.command.mainCommand
 import taboolib.common.platform.command.subCommand
 import taboolib.expansion.createHelper
+import taboolib.module.lang.Language
+import taboolib.platform.util.asLangText
 import taboolib.platform.util.submit
 import java.util.UUID
 
@@ -30,6 +38,7 @@ import java.util.UUID
  * - /bv status      查看当前绑定状态与凭证信息
  * - /bv reward <bvid>  基于三连记录登记奖励
  * - /bv admin credential ... 管理/查看凭证
+ * - /bv menu 查看视频列表
  *
  * 权限节点：
  * - bilibili.video.use          玩家基础命令（qrcode/status/triple/reward）
@@ -54,7 +63,7 @@ object BilibiliVideoCommand {
                 if (!result.success || result.qrUrl == null) {
                     val message = result.message
                     player.submit(async = false) {
-                        player.sendMessage("§c[BV] $message")
+                        player.sendPrefixedMessage("&e$message")
                     }
                     return@submit
                 }
@@ -62,12 +71,26 @@ object BilibiliVideoCommand {
                 player.submit(async = false) {
                     // 使用虚拟物品发送二维码地图到主手
                     VirtualItemSession.sendVirtualItem(player, qrUrl)
-                    player.sendMessage("§a[BV] 已为你生成二维码，请使用手机扫码完成绑定。")
+                    player.sendParseLang("account-bind-tip")
                 }
             }
         }
     }
 
+    /**
+     * 打开视频菜单，供玩家查看
+     */
+    @CommandBody(permission = "bilibili.video.use", permissionDefault = PermissionDefault.TRUE)
+    val menu = subCommand {
+        execute<Player> { player, _, _ ->
+            val token = BoundAccountRepository.findByPlayerUuid(player?.uniqueId.toString())
+            if (token == null || token.status != 1){
+                player.sendParseLang("account-not-bind")
+                return@execute
+            }
+            player.openVideoMenu()
+        }
+    }
     /**
      * 查看当前玩家的绑定状态与凭证信息。
      */
@@ -80,16 +103,29 @@ object BilibiliVideoCommand {
 
                 player.submit(async = false) {
                     if (binding == null) {
-                        player.sendMessage("§c[BV] 你还没有绑定任何 B 站账号。")
+                        player.sendParseLang("account-not-bind")
                     } else {
-                        player.sendMessage("§b[BV] 当前绑定信息：")
-                        player.sendMessage(" §7- 玩家：§f${binding.playerName}")
-                        player.sendMessage(" §7- B 站 UID：§f${binding.bilibiliMid}")
-                        player.sendMessage(" §7- B 站昵称：§f${binding.bilibiliName}")
+                        val name = MessageArg(
+                            "player",
+                            binding.playerName
+                        )
+                        val mid = MessageArg(
+                            "user_mid",
+                            "${binding.bilibiliMid}"
+                        )
+                        val userName = MessageArg(
+                            "user_name",
+                            binding.bilibiliName
+                        )
+                        player.sendParseLang("account-bind-info",true, name,mid,userName,)
+//                        player.sendMessage("§b[BV] 当前绑定信息：")
+//                        player.sendMessage(" §7- 玩家：§f${binding.playerName}")
+//                        player.sendMessage(" §7- B 站 UID：§f${binding.bilibiliMid}")
+//                        player.sendMessage(" §7- B 站昵称：§f${binding.bilibiliName}")
                     }
 
                     if (credential == null) {
-                        player.sendMessage("§e[BV] 尚未为你保存登录凭证，请通过 /bv qrcode 扫码登录。")
+                        player.sendParseLang("token-not-save")
                     } else {
                         val statusText = when (credential.status) {
                             0 -> "§c禁用"
@@ -97,10 +133,26 @@ object BilibiliVideoCommand {
                             2 -> "§c过期"
                             else -> "§e未知(${credential.status})"
                         }
-                        player.sendMessage("§b[BV] 凭证信息：")
-                        player.sendMessage(" §7- 标签：§f${credential.label}")
-                        player.sendMessage(" §7- 状态：$statusText")
-                        player.sendMessage(" §7- 绑定 UID：§f${credential.bilibiliMid ?: binding?.bilibiliMid}")
+                        val tag = MessageArg(
+                            "token_tag",
+                            credential.label
+                        )
+
+                        val status = MessageArg(
+                            "token_status",
+                            statusText
+                        )
+
+                        val mid = MessageArg(
+                            "user_mid",
+                            "${credential.bilibiliMid ?: binding?.bilibiliMid}"
+                        )
+
+                        player.sendParseLang("token-info", true,tag,status,mid)
+//                        player.sendMessage("§b[BV] 凭证信息：")
+//                        player.sendMessage(" §7- 标签：§f${credential.label}")
+//                        player.sendMessage(" §7- 状态：$statusText")
+//                        player.sendMessage(" §7- 绑定 UID：§f${credential.bilibiliMid ?: binding?.bilibiliMid}")
                     }
                 }
             }
@@ -128,20 +180,47 @@ object BilibiliVideoCommand {
                     val result = CredentialService.checkTripleByPlayer(player, bvid)
                     player.submit(async = false) {
                         if (!result.success || result.tripleStatus == null) {
-                            player.sendMessage("§c[BV] ${result.message}")
+                            player.sendPrefixedMessage("&e${result.message}")
                             return@submit
                         }
                         val status = result.tripleStatus
-                        val likeText = if (status.liked) "§a已点赞" else "§c未点赞"
-                        val coinText = if (status.coinCount > 0) "§a已投币(${status.coinCount})" else "§c未投币"
-                        val favText = if (status.favoured) "§a已收藏" else "§c未收藏"
-                        val tripleText = if (status.isTriple) "§a已完成三连" else "§e尚未完成三连"
+                        val likeText = if (status.liked) "video-like-success" else "video-like-fail"
+                        val coinText = if (status.coinCount > 0) "video-coin-success" else "video-coin-fail"
+                        val favText = if (status.favoured) "video-favorite-success" else "video-favorite-fail"
+                        val tripleText = if (status.isTriple) "video-triple-success" else "video-triple-fail"
 
-                        player.sendMessage("§b[BV] 对稿件 $bvid 的三连状态：")
-                        player.sendMessage(" §7- $likeText")
-                        player.sendMessage(" §7- $coinText")
-                        player.sendMessage(" §7- $favText")
-                        player.sendMessage(" §7- $tripleText")
+
+                        val bv = MessageArg(
+                            "bv",
+                            bvid
+                        )
+
+                        val like = MessageArg(
+                            "video_like",
+                            player.asLangText(likeText)
+                        )
+
+                        val coin = MessageArg(
+                            "video_coin",
+                            player.asLangText(coinText)
+                        )
+
+                        val fav = MessageArg(
+                            "video_favorite",
+                            player.asLangText(favText)
+                        )
+
+                        val triple = MessageArg(
+                            "video_triple",
+                            player.asLangText(tripleText)
+                        )
+
+                        player.sendParseLang("video-status",bv,like,coin,fav,triple)
+//                        player.sendMessage("§b[BV] 对稿件 $bvid 的三连状态：")
+//                        player.sendMessage(" §7- $likeText")
+//                        player.sendMessage(" §7- $coinText")
+//                        player.sendMessage(" §7- $favText")
+//                        player.sendMessage(" §7- $tripleText")
                     }
                 }
             }
@@ -166,7 +245,11 @@ object BilibiliVideoCommand {
                     val result = RewardService.rewardByPlayerAndBvid(player, bvid)
                     player.submit(async = false) {
                         if (!result.success) {
-                            player.sendMessage("§c[BV] ${result.message}")
+                            var bv = MessageArg(
+                                "bv",
+                                bvid
+                            )
+                            player.sendParseLang(result.message,bv)
                             return@submit
                         }
 
@@ -182,7 +265,7 @@ object BilibiliVideoCommand {
                             )
                         }
 
-                        player.sendMessage("§a[BV] ${result.message}")
+                        player.sendParseLang(result.message)
                     }
                 }
             }
@@ -273,11 +356,20 @@ object BilibiliVideoCommand {
         literal("reload") {
             execute<ProxyCommandSender> { sender, _, _ ->
                 val ok = RewardConfigManager.reload()
+                val ok1 = GuiConfigManager.reload()
+                Language.reload()
+                sender.sendPrefixedMessage("&a已重载语言文件")
                 if (ok) {
                     val size = RewardConfigManager.getConfiguredBvids().size
-                    sender.sendMessage("§a[BV] 已重载 config.yml，当前共登记 $size 个 reward.videos 项。")
+                    sender.sendPrefixedMessage("&a已重载配置文件，当前共登记 $size 个 reward.videos 项。")
                 } else {
-                    sender.sendMessage("§c[BV] 重载 config.yml 失败，请检查后台日志。")
+                    sender.sendPrefixedMessage("&c重载配置文件失败，请检查后台日志。")
+                }
+                if (ok1) {
+                    VideoGui.reload()
+                    sender.sendPrefixedMessage("&a已重载GUI配置")
+                }else {
+                    sender.sendPrefixedMessage("&a重载GUI配置失败，请检查后台日志。")
                 }
             }
         }
@@ -286,7 +378,11 @@ object BilibiliVideoCommand {
 
     private fun ensureConfiguredBvid(player: Player, bvid: String): Boolean {
         if (!RewardConfigManager.isBvidConfigured(bvid)) {
-            player.sendMessage("§c[BV] 稿件 $bvid 尚未在 config.yml 的 reward.videos 中登记，无法使用该命令。")
+            val bv = MessageArg(
+                "bv",
+                bvid
+            )
+            player.sendParseLang("video-not-find",bv)
             return false
         }
         return true

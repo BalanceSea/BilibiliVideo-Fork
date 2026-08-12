@@ -1,0 +1,97 @@
+prefix: '&7[&bBiliBili三连奖励&7] &r'
+no-permission: '&c⚠ 你没有权限执行该指令!'
+player-only: '&c⚠ 此命令只能由玩家执行!'
+unknown-command: '&c⚠ 未知指令!'
+
+# 账号未绑定
+account-not-bind: '❌&c B站账号未绑定，请通过 &e/bv qrcode &c扫码登录'
+
+# 账号绑定提示
+account-bind-tip: '📱&a 已为你生成二维码，请使用手机扫码完成绑定'
+
+# 账号绑定成功提示
+account-bind-success: '✅&a 已成功绑定 B 站账号 &e{user_name} &7(&e{user_mid}&7)'
+# 账号信息
+account-bind-info:
+  - '&8&m                        '
+  - '📋&b&l 当前绑定信息'
+  - ' &7▪ 玩家: &f{player}'
+  - ' &7▪ B 站 UID: &f{user_mid}'
+  - ' &7▪ B 站昵称: &f{user_name}'
+  - '&8&m                        '
+
+# 凭证未保存
+token-not-save: '❌&c 尚未为你保存登录凭证，请通过 &e/bv qrcode &c扫码登录'
+
+# 凭证信息
+token-info:
+  - '&8&m                        '
+  - '🔑&b&l 当前凭证信息'
+  - ' &7▪ 标签: &f{token_tag}'
+  - ' &7▪ 状态: &f{token_status}'
+  - ' &7▪ 绑定 UID: &f{user_mid}'
+  - '&8&m                        '
+
+# 凭证列表
+token-info-list: '&7  ▪ &fUID: {user_mid} &7| &f状态: {token_status}'
+
+# 凭证查找
+token-find-success:
+  - '&8&m                        '
+  - '🔍&b&l 凭证详情'
+  - ' &7▪ UID: &f{user_mid}'
+  - ' &7▪ 状态: &f{token_status}'
+  - ' &7▪ lastUsedAt: &f{token_lastUsedAt}'
+  - ' &7▪ expiredAt: &f{token_expiredAt}'
+  - '&8&m                        '
+token-find-fail: '&c❌ 未找到名为 &e{token_label} &c的凭证'
+
+# 视频三连信息
+video-status:
+  - '&8&m                        '
+  - '📺&b&l 视频 &e{bv} &b的三连状态'
+  - ' &7▪ {video_like}'
+  - ' &7▪ {video_coin}'
+  - ' &7▪ {video_favorite}'
+  - ' &7▪ {video_triple}'
+  - '&8&m                        '
+
+# 视频点赞
+video-like-success: '👍&a 已点赞'
+video-like-fail: '👎&c 未点赞'
+
+# 视频投币
+video-coin-success: '🪙&a 已投币'
+video-coin-fail: '🪙&c 未投币'
+
+# 视频收藏
+video-favorite-success: '⭐&a 已收藏'
+video-favorite-fail: '⭐&c 未收藏'
+
+# 三连状态
+video-triple-success: '🎉&a 已完成三连'
+video-triple-fail: '📝&e 未完成三连'
+
+# 三连奖励领取提示
+video-claim: '🎁&a 成功领取三连奖励'
+video-not-claim: '⚠&e 尚未完成该视频的点赞、投币、收藏，无法领取奖励'
+video-claimed: '✅&a 已领取过该奖励'
+video-claim-error: '❌&c 领取奖励失败，请稍后重试'
+video-claim-warn: '⚠&e 已记录该视频三连，但并没有设置奖励'
+
+# 视频链接提示
+video-url: '🔗&b&l 视频链接&7: &fhttps://www.bilibili.com/video/{bv}'
+# 视频不存在提示
+video-not-find: '⚠&e 视频 &e{bv} &e并未登记'
+
+# 二维码失效
+qrcode-invalid: '❌&c 二维码已失效，请重新执行 &e/bv qrcode'
+
+# GUI领取文本
+gui-video-claim: '✅&a 点击领取奖励'
+gui-video-cant-claim: '❌&c 不可领取'
+gui-video-already-claim: '✔&a 已领取该奖励'
+
+# 解绑提示
+admin-unbind-success: '✅&a 已解除玩家 &e{player} &a与 B 站账号 &e{user_uid} &a的绑定'
+admin-unbind-fail: '❌&c 未找到与 &e{player} &c匹配的玩家、UUID 或 B 站 UID'

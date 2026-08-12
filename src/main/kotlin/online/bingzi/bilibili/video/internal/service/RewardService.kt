@@ -5,6 +5,7 @@ import online.bingzi.bilibili.video.internal.config.RewardConfigManager
 import online.bingzi.bilibili.video.internal.config.RewardTemplate
 import online.bingzi.bilibili.video.internal.repository.BoundAccountRepository
 import online.bingzi.bilibili.video.internal.repository.RewardRecordRepository
+import online.bingzi.bilibili.video.internal.util.MessageUtil
 import org.bukkit.entity.Player
 
 /**
@@ -42,7 +43,7 @@ object RewardService {
         if (!RewardConfigManager.isBvidConfigured(bvid)) {
             return RewardResult(
                 success = false,
-                message = "该稿件未在 config.yml 的 reward.videos 中登记，无法领取奖励。"
+                message = "video-not-find"
             )
         }
 
@@ -64,7 +65,7 @@ object RewardService {
         if (!tripleStatus.isTriple) {
             return RewardResult(
                 success = false,
-                message = "尚未完成该视频的点赞、投币、收藏，无法领取奖励。"
+                message = MessageUtil.parseText("video-not-claim")
             )
         }
 
@@ -83,14 +84,9 @@ object RewardService {
         )
 
         if (alreadyClaimed) {
-            val strategyHint = when (dedupStrategy) {
-                DedupStrategy.PLAYER_AND_BILIBILI -> "（当前玩家 + 当前 B 站账号）"
-                DedupStrategy.BILIBILI_ONLY -> "（当前 B 站账号）"
-                DedupStrategy.PLAYER_ONLY -> "（当前玩家）"
-            }
             return RewardResult(
                 success = false,
-                message = "你已经领取过该任务的奖励$strategyHint，无法重复领取。"
+                message = MessageUtil.parseText("video-claimed")
             )
         }
 
@@ -108,15 +104,15 @@ object RewardService {
         if (inserted <= 0) {
             return RewardResult(
                 success = false,
-                message = "记录奖励失败，请稍后重试。"
+                message = MessageUtil.parseText("video-claim-error")
             )
         }
 
         val template = resolve.template
         val msg = if (template != null) {
-            "已为你发放该任务的奖励（模板: $resolvedRewardKey）。"
+            MessageUtil.parseText("video-claim")
         } else {
-            "已记录你对该视频的三连行为，但尚未配置奖励模板。"
+            MessageUtil.parseText("video-claim-warn")
         }
 
         return RewardResult(
@@ -131,7 +127,7 @@ object RewardService {
     /**
      * 根据判重策略检查是否已领取奖励。
      */
-    private fun checkAlreadyClaimed(
+     fun checkAlreadyClaimed(
         strategy: DedupStrategy,
         playerUuid: String,
         bilibiliMid: Long?,

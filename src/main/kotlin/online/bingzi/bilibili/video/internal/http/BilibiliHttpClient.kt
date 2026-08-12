@@ -45,6 +45,9 @@ internal object BilibiliHttpClient {
 
         client.newCall(request).execute().use { resp ->
             val body = resp.body?.string() ?: ""
+            if (resp.code == 412){
+                throw BilibiliRiskControlException(url)
+            }
             if (!resp.isSuccessful) {
                 error("HTTP GET failed: $url, code=${resp.code}, body=$body")
             }
@@ -98,4 +101,8 @@ internal object BilibiliHttpClient {
             "AppleWebKit/537.36 (KHTML, like Gecko) " +
             "Chrome/120.0.0.0 Safari/537.36"
     }
+
+    class BilibiliRiskControlException(
+        val endpoint: String
+    ) : RuntimeException("Bilibili HTTP 412: $endpoint")
 }

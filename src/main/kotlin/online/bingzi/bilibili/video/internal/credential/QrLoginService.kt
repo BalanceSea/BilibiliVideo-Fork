@@ -9,6 +9,8 @@ import online.bingzi.bilibili.video.internal.bilibili.dto.QrPollResponse
 import online.bingzi.bilibili.video.internal.repository.CredentialRepository
 import online.bingzi.bilibili.video.internal.service.BindingService
 import online.bingzi.bilibili.video.internal.ui.VirtualItemSession
+import online.bingzi.bilibili.video.internal.util.MessageArg
+import online.bingzi.bilibili.video.internal.util.MessageUtil.sendParseLang
 import org.bukkit.Bukkit
 import org.bukkit.entity.Player
 import taboolib.common.platform.function.info
@@ -210,7 +212,7 @@ object QrLoginService {
                 info("[QrLoginService] 玩家 ${session.playerName} 的二维码已失效，已提示重新生成。")
                 notifyPlayer(
                     session,
-                    "§e[BV] 二维码已失效，请重新执行 /bv qrcode。"
+                    "qrcode-invalid"
                 )
                 cancelSession(playerUuid)
             }
@@ -316,14 +318,23 @@ object QrLoginService {
 
         if (!bindResult.success) {
             warning("[QrLoginService] 玩家 ${session.playerName} 绑定失败：${bindResult.message}")
-            notifyPlayer(session, "§c[BV] ${bindResult.message}")
+            notifyPlayer(session, "&c${bindResult.message}")
             return
         }
 
         info("[QrLoginService] 玩家 ${session.playerName} 已完成二维码登录绑定流程。")
+        val messageMid = MessageArg(
+            "user_mid",
+            "$mid"
+        )
+        val messageName = MessageArg(
+            "user_name",
+            uname
+        )
         notifyPlayer(
             session,
-            "§a[BV] 已成功绑定 B 站账号 $mid ($uname)"
+            "account-bind-success",
+            messageMid, messageName
         )
     }
 
@@ -427,11 +438,11 @@ object QrLoginService {
     /**
      * 在主线程上给玩家发送提示消息（如果仍在线）。
      */
-    private fun notifyPlayer(session: QrSession, message: String) {
+    private fun notifyPlayer(session: QrSession, key: String,vararg args: MessageArg) {
         val player = Bukkit.getPlayer(session.playerUuid) ?: return
         player.submit(async = false) {
             if (player.isOnline) {
-                player.sendMessage(message)
+                player.sendParseLang(key,*args)
             }
         }
     }

@@ -19,6 +19,7 @@ taboolib {
         install(BukkitNMSItemTag)
         install(BukkitNMSUtil)
         install(BukkitUtil)
+        install(BukkitUI)
         install(CommandHelper)
         install(I18n)
         install(Metrics)
@@ -28,9 +29,10 @@ taboolib {
         enableIsolatedClassloader = true
     }
     description {
-        name = "BilibiliVideo"
+        name = "BiliBiliVideo-Fork"
         contributors {
             name("BingZi-233")
+            name("BalanceSea")
         }
     }
     version {
@@ -85,7 +87,7 @@ publishing {
     publications {
         create<MavenPublication>("maven") {
             groupId = "online.bingzi"
-            artifactId = "bilibilivideo"
+            artifactId = "bilibilivideo-fork"
             // 使用 gradle.properties 中的版本号
             version = project.version.toString()
 
@@ -94,9 +96,9 @@ publishing {
             artifact(apiJarFile)
 
             pom {
-                name.set("BilibiliVideo")
+                name.set("BilibiliVideo-Fork")
                 description.set("链接BilibiliVideo的Minecraft插件")
-                url.set("https://github.com/BingZi-233/BilibiliVideo")
+                url.set("https://github.com/BalanceSea/BilibiliVideo")
 
                 licenses {
                     license {
@@ -109,27 +111,29 @@ publishing {
                     developer {
                         id.set("BingZi-233")
                         name.set("BingZi-233")
+                        id.set("BalanceSea")
+                        name.set("BalanceSea")
                     }
                 }
             }
         }
     }
 
-    repositories {
-        maven {
-            name = "AeolianCloud"
-            url = uri("https://repo.aeoliancloud.com/repository/releases/")
-            credentials {
-                username = System.getenv("MAVEN_USERNAME") ?: project.findProperty("mavenUsername") as String?
-                password = System.getenv("MAVEN_PASSWORD") ?: project.findProperty("mavenPassword") as String?
-            }
-            authentication {
-                create<BasicAuthentication>("basic")
-            }
-            // 添加上传方法配置
-            isAllowInsecureProtocol = false
-        }
-    }
+//    repositories {
+//        maven {
+//            name = "AeolianCloud"
+//            url = uri("https://repo.aeoliancloud.com/repository/releases/")
+//            credentials {
+//                username = System.getenv("MAVEN_USERNAME") ?: project.findProperty("mavenUsername") as String?
+//                password = System.getenv("MAVEN_PASSWORD") ?: project.findProperty("mavenPassword") as String?
+//            }
+//            authentication {
+//                create<BasicAuthentication>("basic")
+//            }
+//            // 添加上传方法配置
+//            isAllowInsecureProtocol = false
+//        }
+//    }
 }
 
 // 确保发布任务依赖于API构建任务

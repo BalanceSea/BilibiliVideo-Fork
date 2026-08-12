@@ -1,6 +1,7 @@
 package online.bingzi.bilibili.video.internal.listener
 
 import online.bingzi.bilibili.video.internal.credential.QrLoginService
+import online.bingzi.bilibili.video.internal.service.TripleStatusCache
 import online.bingzi.bilibili.video.internal.ui.VirtualItemSession
 import org.bukkit.event.player.PlayerQuitEvent
 import taboolib.common.platform.event.SubscribeEvent
@@ -25,5 +26,8 @@ object PlayerListener {
 
         // 取消二维码登录会话
         QrLoginService.cancelLogin(player)
+
+        //清理三连状态缓存
+        TripleStatusCache.clearPlayer(uuid)
     }
 }

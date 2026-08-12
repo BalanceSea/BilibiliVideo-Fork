@@ -7,13 +7,13 @@ reward:
 
   templates:
     default:
-      description: "完成三连时发放的默认奖励示例"
+      description: "完成三连时发放的默认奖励示例\n爱上一只小猪？"
       kether:
         # 仅作为示例，实际脚本可根据需要自行编写
         - 'tell "&a你已完成该视频的三连，感谢支持！"'
 
     vip:
-      description: "示例：某些视频使用更高档奖励"
+      description: "示例：某些视频使用更高档奖励\n猪猪"
       kether:
         - 'tell "&6你对该视频的支持获得了 VIP 奖励！"'
 

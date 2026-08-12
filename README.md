@@ -1,6 +1,6 @@
 <div align="center">
 
-![b55448b2819aee143bb2b9cd5aa4dd98.jpg](images/b55448b2819aee143bb2b9cd5aa4dd98.jpg)
+![BiliBiliVideo.png](images/BiliBiliVideo.png)
 **一个让 Minecraft 与哔哩哔哩无缝对接的全功能插件**
 
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
@@ -18,11 +18,13 @@
 
 ## 📖 项目简介
 
-**BilibiliVideo** 是一个基于 TabooLib 6.3.0-afd75a7 框架开发的 Minecraft 服务器插件，为服务器提供完整的哔哩哔哩平台集成能力。每个玩家可以独立登录自己的 B 站账号，在游戏内完成视频三连检测、领取奖励等互动功能。
+**BilibiliVideo-Fork** 是一个基于 TabooLib 6.3.0-afd75a7 框架与 BiliBiliVideo 开发的 Minecraft 服务器插件，为服务器提供完整的哔哩哔哩平台集成能力。每个玩家可以独立登录自己的 B 站账号，在游戏内完成视频三连检测、领取奖励等互动功能。
 
 ### 🎯 核心亮点
 
 - 🗺️ **游戏内二维码登录** - 创新性地使用地图物品展示 B 站登录二维码
+- 💻  **游戏内GUI界面** - '傻瓜式'操作,妈妈再也不用担心玩家不会输指令啦
+- 📜 **自定义语言** - 高度自定义化的语言文件
 - 👥 **多账户隔离系统** - 每位玩家使用独立的 B 站账号，数据完全隔离
 - ⚡ **异步架构** - 所有网络请求异步执行，不影响服务器性能
 - 🎁 **灵活奖励系统** - 基于 Kether 脚本引擎，支持自定义奖励逻辑
@@ -58,10 +60,11 @@
 │           命令层 (Command)               │  玩家交互入口
 ├─────────────────────────────────────────┤
 │          服务层 (Service)                │  业务逻辑处理
-│  ├─ BindingService   (账号绑定)         │
-│  ├─ TripleCheckService (三连检测)       │
-│  ├─ RewardService    (奖励发放)         │
-│  └─ CredentialService (凭证管理)        │
+│  ├─ BindingService   (账号绑定)          │
+│  ├─ TripleCheckService (三连检测)        │
+│  ├─ TripleStatusCache (三连状态缓存)     │
+│  ├─ RewardService    (奖励发放)          │
+│  └─ CredentialService (凭证管理)         │
 ├─────────────────────────────────────────┤
 │         仓库层 (Repository)              │  数据访问层
 │  ├─ BoundAccountRepository              │
@@ -98,25 +101,26 @@
 1. **下载插件**
    ```bash
    # 从 Releases 页面下载最新版本
-   wget https://github.com/BingZi-233/BilibiliVideo/releases/download/v2.0.0-beta/BilibiliVideo-2.0.0-beta.jar
+   wget https://github.com/BalanceSea/BilibiliVideo/releases/download/v2.0.0-beta/BilibiliVideo-2.0.0-beta.jar
    ```
 
 2. **放置插件文件**
    ```
    plugins/
-   └── BilibiliVideo-2.0.0-beta.jar
+   └── BilibiliVideo-Fork-2.8.0-beta.jar
    ```
 
-3. **启动服务器**
+   3. **启动服务器**
 
-   插件会自动创建配置文件和数据库：
-   ```
-   plugins/BilibiliVideo/
-   ├── config.yml          # 奖励配置
-   ├── database.yml        # 数据库配置
-   ├── lang/               # 语言文件
-   └── bilibili_video.db   # SQLite 数据库
-   ```
+      插件会自动创建配置文件和数据库：
+      ```
+      plugins/BilibiliVideo/
+      ├── config.yml          # 奖励配置
+      ├── gui.yml             # GUI配置
+      ├── database.yml        # 数据库配置
+      ├── lang/               # 语言文件
+      └── bilibili_video.db   # SQLite 数据库
+      ```
 
 4. **验证安装**
 
@@ -138,13 +142,14 @@
 
 ### 玩家命令
 
-| 命令 | 功能 | 权限节点 |
-|------|------|----------|
-| `/bv help` | 查看帮助信息 | `bilibili.video.use` |
-| `/bv qrcode` | 生成 B 站登录二维码地图 | `bilibili.video.use` |
-| `/bv status` | 查看账号绑定状态 | `bilibili.video.use` |
-| `/bv triple <bvid>` | 检测视频三连状态 | `bilibili.video.use` |
-| `/bv reward <bvid>` | 领取三连奖励 | `bilibili.video.use` |
+| 命令                  | 功能            | 权限节点 |
+|---------------------|---------------|----------|
+| `/bv help`          | 查看帮助信息        | `bilibili.video.use` |
+| `/bv menu`          | 打开GUI菜单       | `bilibili.video.use` |
+| `/bv qrcode`        | 生成 B 站登录二维码地图 | `bilibili.video.use` |
+| `/bv status`        | 查看账号绑定状态      | `bilibili.video.use` |
+| `/bv triple <bvid>` | 检测视频三连状态      | `bilibili.video.use` |
+| `/bv reward <bvid>` | 领取三连奖励        | `bilibili.video.use` |
 
 ### 管理员命令
 
@@ -259,7 +264,182 @@ reward:
 
     BV1zz411c7mF: {}             # 使用默认模板（可省略 rewardKey）
 ```
+### GUI配置 (` gui.yml `)
+````yaml
 
+
+Title: "&fBiliBiliVideo &7| &f三连奖励"
+#不要填写过多视频占位符 请求过多B站会风控！！！
+#不要填写过多视频占位符 请求过多B站会风控！！！
+#不要填写过多视频占位符 请求过多B站会风控！！！
+Layout:
+  - "####i####"
+  - "#1111111#"
+  - "#p#####n#"
+
+Icons:
+  # 隔板
+  '#':
+    display:
+      #物品名称
+      name: "&7▪ 我只是个隔板"
+      #物品材质
+      mats: "gray_stained_glass_pane"
+      #物品CustomModelData
+      cmd: '-1'
+      #物品描述
+      lore:
+        - "&7爱上一只小猪?"
+
+  # BiliBiliVideo
+  '1':
+    type: VIDEO
+    display:
+      name: "⭐&6 %bv%"
+      mats: "gold_ingot"
+      lore:
+        - "&8&m                        "
+        - "📺&b&l 三连状态"
+        - " &7▪ 点赞: &f%status_like%"
+        - " &7▪ 收藏: &f%status_favorite%"
+        - " &7▪ 投币: &f%status_coin%"
+        - " &7▪ 三连: &f%status%"
+        - "&8&m                        "
+        - "🎁&b&l 三连奖励"
+        - " &7▪ %description%"
+        - "&8&m                        "
+        - "✅&b&l 奖励状态"
+        - " &7▪ %claim_status%"
+        - "&8&m                        "
+        - "✔&a&l 左键领取奖励 &7| &r🔗&b&l 右键查看视频链接"
+        - "&8&m                        "
+  'p':
+    type: PREVIOUS
+    display:
+      name: "&f上一页"
+      mats: "paper"
+      lore:
+        - "&7点击前往上一页"
+        - "&7当前页: &e%page%"
+
+  'n':
+    type: NEXT
+    display:
+      name: "&f下一页"
+      mats: "paper"
+      lore:
+        - "&7点击前往下一页"
+        - "&7当前页: &e%page%"
+  # 玩家信息
+  'i':
+    display:
+      name: "📋&b&l BiliBiliVideo &7| &f三连奖励"
+      mats: "player_head"
+      lore:
+        - "&8&m                        "
+        - " &7点击查看三连奖励"
+        - "&8&m                        "
+````
+### 语言配置(`lang/zh_CN.yml`)
+````yaml
+prefix: '&7[&bBiliBili三连奖励&7] &r'
+no-permission: '&c⚠ 你没有权限执行该指令!'
+player-only: '&c⚠ 此命令只能由玩家执行!'
+unknown-command: '&c⚠ 未知指令!'
+
+# 账号未绑定
+account-not-bind: '❌&c B站账号未绑定，请通过 &e/bv qrcode &c扫码登录'
+
+# 账号绑定提示
+account-bind-tip: '📱&a 已为你生成二维码，请使用手机扫码完成绑定'
+
+# 账号绑定成功提示
+account-bind-success: '✅&a 已成功绑定 B 站账号 &e{user_name} &7(&e{user_mid}&7)'
+# 账号信息
+account-bind-info:
+  - '&8&m                        '
+  - '📋&b&l 当前绑定信息'
+  - ' &7▪ 玩家: &f{player}'
+  - ' &7▪ B 站 UID: &f{user_mid}'
+  - ' &7▪ B 站昵称: &f{user_name}'
+  - '&8&m                        '
+
+# 凭证未保存
+token-not-save: '❌&c 尚未为你保存登录凭证，请通过 &e/bv qrcode &c扫码登录'
+
+# 凭证信息
+token-info:
+  - '&8&m                        '
+  - '🔑&b&l 当前凭证信息'
+  - ' &7▪ 标签: &f{token_tag}'
+  - ' &7▪ 状态: &f{token_status}'
+  - ' &7▪ 绑定 UID: &f{user_mid}'
+  - '&8&m                        '
+
+# 凭证列表
+token-info-list: '&7  ▪ &fUID: {user_mid} &7| &f状态: {token_status}'
+
+# 凭证查找
+token-find-success:
+  - '&8&m                        '
+  - '🔍&b&l 凭证详情'
+  - ' &7▪ UID: &f{user_mid}'
+  - ' &7▪ 状态: &f{token_status}'
+  - ' &7▪ lastUsedAt: &f{token_lastUsedAt}'
+  - ' &7▪ expiredAt: &f{token_expiredAt}'
+  - '&8&m                        '
+token-find-fail: '&c❌ 未找到名为 &e{token_label} &c的凭证'
+
+# 视频三连信息
+video-status:
+  - '&8&m                        '
+  - '📺&b&l 视频 &e{bv} &b的三连状态'
+  - ' &7▪ {video_like}'
+  - ' &7▪ {video_coin}'
+  - ' &7▪ {video_favorite}'
+  - ' &7▪ {video_triple}'
+  - '&8&m                        '
+
+# 视频点赞
+video-like-success: '👍&a 已点赞'
+video-like-fail: '👎&c 未点赞'
+
+# 视频投币
+video-coin-success: '🪙&a 已投币'
+video-coin-fail: '🪙&c 未投币'
+
+# 视频收藏
+video-favorite-success: '⭐&a 已收藏'
+video-favorite-fail: '⭐&c 未收藏'
+
+# 三连状态
+video-triple-success: '🎉&a 已完成三连'
+video-triple-fail: '📝&e 未完成三连'
+
+# 三连奖励领取提示
+video-claim: '🎁&a 成功领取三连奖励'
+video-not-claim: '⚠&e 尚未完成该视频的点赞、投币、收藏，无法领取奖励'
+video-claimed: '✅&a 已领取过该奖励'
+video-claim-error: '❌&c 领取奖励失败，请稍后重试'
+video-claim-warn: '⚠&e 已记录该视频三连，但并没有设置奖励'
+
+# 视频链接提示
+video-url: '🔗&b&l 视频链接&7: &fhttps://www.bilibili.com/video/{bv}'
+# 视频不存在提示
+video-not-find: '⚠&e 视频 &e{bv} &e并未登记'
+
+# 二维码失效
+qrcode-invalid: '❌&c 二维码已失效，请重新执行 &e/bv qrcode'
+
+# GUI领取文本
+gui-video-claim: '✅&a 点击领取奖励'
+gui-video-cant-claim: '❌&c 不可领取'
+gui-video-already-claim: '✔&a 已领取该奖励'
+
+# 解绑提示
+admin-unbind-success: '✅&a 已解除玩家 &e{player} &a与 B 站账号 &e{user_uid} &a的绑定'
+admin-unbind-fail: '❌&c 未找到与 &e{player} &c匹配的玩家、UUID 或 B 站 UID'
+````
 #### 🎨 Kether 脚本语法示例
 
 [Kether Explorer](https://taboolib.hhhhhy.kim/kether-list/)
@@ -333,7 +513,7 @@ reward:
 ### TabooLib 模块
 
 ```
-Basic, BukkitHook, BukkitNMS, BukkitUtil,
+Basic, BukkitUI, BukkitHook, BukkitNMS, BukkitUtil,
 CommandHelper, I18n, Metrics, MinecraftChat,
 Kether, Bukkit
 ```
@@ -346,7 +526,7 @@ Kether, Bukkit
 
 ```bash
 # 克隆仓库
-git clone https://github.com/BingZi-233/BilibiliVideo.git
+git clone https://github.com/BalanceSea/BilibiliVideo.git
 cd BilibiliVideo
 
 # 构建发行版本（不含 TabooLib 本体）
@@ -404,6 +584,7 @@ src/main/kotlin/online/bingzi/bilibili/video/
     │   └── BilibiliVideoCommand.kt
     ├── config/                               # 配置管理
     │   ├── DatabaseConfig.kt
+    │   ├── GuiConfig.kt
     │   └── RewardConfig.kt
     ├── credential/                           # 登录凭证
     │   └── QrLoginService.kt
@@ -415,6 +596,8 @@ src/main/kotlin/online/bingzi/bilibili/video/
     │   ├── BoundAccountEntities.kt
     │   ├── TripleStatusEntities.kt
     │   └── RewardRecordEntities.kt
+    ├── gui/                                  # GUI界面
+    │   └── VideoGui.kt
     ├── http/                                 # HTTP 客户端
     │   └── BilibiliHttpClient.kt
     ├── repository/                           # 数据仓库
@@ -426,6 +609,7 @@ src/main/kotlin/online/bingzi/bilibili/video/
     │   ├── BindingService.kt
     │   ├── CredentialService.kt
     │   ├── TripleCheckService.kt
+    │   ├── TripleStatusCache.kt     
     │   ├── RewardService.kt
     │   └── RewardKetherExecutor.kt
     └── ui/                                   # UI 层
@@ -497,19 +681,19 @@ src/main/kotlin/online/bingzi/bilibili/video/
 
 ## 🔗 相关链接
 
-| 资源 | 链接 |
-|------|------|
-| **项目主页** | [GitHub Repository](https://github.com/BingZi-233/BilibiliVideo) |
-| **问题反馈** | [Issues](https://github.com/BingZi-233/BilibiliVideo/issues) |
-| **TabooLib 官网** | [https://www.tabooproject.org](https://www.tabooproject.org) |
+| 资源 | 链接                                                                                            |
+|------|-----------------------------------------------------------------------------------------------|
+| **项目主页** | [GitHub Repository](https://github.com/BalanceSe/BilibiliVideo)                               |
+| **问题反馈** | [Issues](https://github.com/BalanceSea/BilibiliVideo/issues)                                  |
+| **TabooLib 官网** | [https://www.tabooproject.org](https://www.tabooproject.org)                                  |
 | **Bilibili API 文档** | [SocialSisterYi/bilibili-API-collect](https://github.com/SocialSisterYi/bilibili-API-collect) |
 
 ---
 
 ## 👨‍💻 作者信息
 
-- **开发者**: BingZi-233
-- **联系方式**: 见 GitHub Profile
+- **开发者**: BalanceSea
+- **联系方式**: [QQ](https://wpa.qq.com/msgrd?v=3&uin=3643203568&site=qq&menu=yes)
 
 ---
 
@@ -521,30 +705,14 @@ src/main/kotlin/online/bingzi/bilibili/video/
 - [Ktorm](https://github.com/kotlin-orm/ktorm) - 轻量级 Kotlin ORM 框架
 - [OkHttp](https://github.com/square/okhttp) - 高效的 HTTP 客户端
 - [SocialSisterYi/bilibili-API-collect](https://github.com/SocialSisterYi/bilibili-API-collect) - B 站 API 文档收集
+- [BiliBiliVideo](https://github.com/YsGqHY/BilibiliVideo)
 - [ZXing](https://github.com/zxing/zxing) - 二维码生成库
-
----
-
-## 💰 赞助支持
-
-如果这个项目对你有帮助，欢迎通过以下方式支持开发：
-
-<div align="center">
-
-| 微信支付 | 支付宝 |
-|:-------:|:------:|
-| <img src="images/weixin.png" width="200"/> | <img src="images/zhifubao.png" width="200"/> |
-
-</div>
-
-你的支持是我持续维护和改进项目的动力！🙏
-
 ---
 
 <div align="center">
 
 **如果这个项目对你有帮助，请给个 ⭐ Star 支持一下！**
 
-Made with ❤️ by [BingZi-233](https://github.com/BingZi-233)
+Made with ❤️ by [BalanceSea](https://github.com/BalanceSea)
 
 </div>
