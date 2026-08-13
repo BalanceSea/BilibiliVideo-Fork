@@ -124,66 +124,6 @@ jobs:
             build/libs/*-api.jar
           retention-days: 30
 
-  maven-publish:
-    name: 📚 发布到 Maven 仓库
-    needs: build
-    if: |
-      github.ref == 'refs/heads/master' &&
-      github.event_name != 'pull_request'
-    runs-on: ubuntu-latest
-    environment: MavenConfig
-
-    steps:
-      - name: 📥 检出代码仓库
-        uses: actions/checkout@v4
-
-      - name: ☕ 配置 JDK ${{ env.JAVA_VERSION }}
-        uses: actions/setup-java@v4
-        with:
-          java-version: ${{ env.JAVA_VERSION }}
-          distribution: 'temurin'
-
-      - name: 📦 缓存 Gradle 依赖
-        uses: actions/cache@v4
-        with:
-          path: |
-            ~/.gradle/caches
-            ~/.gradle/wrapper
-            ~/.gradle/kotlin-dsl
-          key: ${{ runner.os }}-gradle-maven-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties', '**/libs.versions.toml') }}
-          restore-keys: |
-            ${{ runner.os }}-gradle-maven-
-            ${{ runner.os }}-gradle-
-
-      - name: 🐘 配置 Gradle 构建工具
-        uses: gradle/actions/setup-gradle@v4
-        with:
-          gradle-version: ${{ env.GRADLE_VERSION }}
-          cache-read-only: true
-
-      - name: 🚀 推送到 Maven 仓库
-        env:
-          MAVEN_USERNAME: ${{ secrets.MAVEN_USERNAME }}
-          MAVEN_PASSWORD: ${{ secrets.MAVEN_PASSWORD }}
-        run: |
-          # 更新 gradle.properties 版本号以保持一致性
-          echo "🔄 更新 gradle.properties 中的版本号为: ${{ needs.build.outputs.short_version }}"
-          sed -i "s/^version=.*/version=${{ needs.build.outputs.short_version }}/" gradle.properties
-          chmod +x gradlew
-          # 先构建API JAR，再发布
-          ./gradlew taboolibBuildApi -PDeleteCode --no-daemon --info
-          ./gradlew publish --no-daemon --info
-
-      - name: ✅ Maven 发布结果
-        if: success()
-        run: |
-          echo "✅ Maven 发布成功完成"
-          echo "📦 发布版本: ${{ needs.build.outputs.version }}"
-          echo "🔗 Maven 仓库地址: https://repo.aeoliancloud.com/repository/releases/"
-          echo "📚 Maven 坐标: online.bingzi:bilibilivideo:${{ needs.build.outputs.short_version }}"
-          echo "💡 使用方式: 在 pom.xml 或 build.gradle 中添加以上坐标"
-
-
   release:
     name: 🎉 创建 GitHub Release
     needs: build
