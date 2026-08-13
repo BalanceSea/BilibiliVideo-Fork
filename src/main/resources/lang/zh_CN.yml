@@ -33,7 +33,10 @@ token-info:
   - '&8&m                        '
 
 # 凭证列表
-token-info-list: '&7  ▪ &fUID: {user_mid} &7| &f状态: {token_status}'
+token-list-head: '&b凭证列表:'
+token-list-info: '&7  ▪ &fUID: {user_mid} &7| &f状态: {token_status}'
+token-list-empty: '&e当前没有任何凭证记录。'
+
 
 # 凭证查找
 token-find-success:
@@ -93,5 +96,5 @@ gui-video-cant-claim: '❌&c 不可领取'
 gui-video-already-claim: '✔&a 已领取该奖励'
 
 # 解绑提示
-admin-unbind-success: '✅&a 已解除玩家 &e{player} &a与 B 站账号 &e{user_uid} &a的绑定'
+admin-unbind-success: '✅&a 已解除玩家 &e{player} &a与 B 站账号 &e{user_mid} &a的绑定'
 admin-unbind-fail: '❌&c 未找到与 &e{player} &c匹配的玩家、UUID 或 B 站 UID'

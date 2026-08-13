@@ -2,6 +2,7 @@ package online.bingzi.bilibili.video.internal.service
 
 import online.bingzi.bilibili.video.internal.config.RewardTemplate
 import org.bukkit.entity.Player
+import taboolib.module.chat.colored
 import taboolib.module.kether.KetherShell
 import taboolib.module.kether.ScriptOptions
 
@@ -19,7 +20,7 @@ object RewardKetherExecutor {
      * @param targetKey 奖励目标 key
      */
     fun execute(player: Player, template: RewardTemplate, bvid: String, targetKey: String) {
-        val script = template.lines.joinToString("\n")
+        val script = template.lines.joinToString("\n").colored()
         KetherShell.eval(
             source = script,
             options = ScriptOptions.new {

@@ -692,7 +692,8 @@ src/main/kotlin/online/bingzi/bilibili/video/
 
 ## 👨‍💻 作者信息
 
-- **开发者**: BalanceSea
+- **原开发者**: Bingzi-233
+- **Fork开发者**: BalanceSea
 - **联系方式**: [QQ](https://wpa.qq.com/msgrd?v=3&uin=3643203568&site=qq&menu=yes)
 
 ---

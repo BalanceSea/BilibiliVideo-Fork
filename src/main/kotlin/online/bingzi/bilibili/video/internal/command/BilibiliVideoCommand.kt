@@ -118,10 +118,6 @@ object BilibiliVideoCommand {
                             binding.bilibiliName
                         )
                         player.sendParseLang("account-bind-info",true, name,mid,userName,)
-//                        player.sendMessage("§b[BV] 当前绑定信息：")
-//                        player.sendMessage(" §7- 玩家：§f${binding.playerName}")
-//                        player.sendMessage(" §7- B 站 UID：§f${binding.bilibiliMid}")
-//                        player.sendMessage(" §7- B 站昵称：§f${binding.bilibiliName}")
                     }
 
                     if (credential == null) {
@@ -149,10 +145,6 @@ object BilibiliVideoCommand {
                         )
 
                         player.sendParseLang("token-info", true,tag,status,mid)
-//                        player.sendMessage("§b[BV] 凭证信息：")
-//                        player.sendMessage(" §7- 标签：§f${credential.label}")
-//                        player.sendMessage(" §7- 状态：$statusText")
-//                        player.sendMessage(" §7- 绑定 UID：§f${credential.bilibiliMid ?: binding?.bilibiliMid}")
                     }
                 }
             }
@@ -216,11 +208,6 @@ object BilibiliVideoCommand {
                         )
 
                         player.sendParseLang("video-status",bv,like,coin,fav,triple)
-//                        player.sendMessage("§b[BV] 对稿件 $bvid 的三连状态：")
-//                        player.sendMessage(" §7- $likeText")
-//                        player.sendMessage(" §7- $coinText")
-//                        player.sendMessage(" §7- $favText")
-//                        player.sendMessage(" §7- $tripleText")
                     }
                 }
             }
@@ -292,17 +279,29 @@ object BilibiliVideoCommand {
                     val targetArg = context["target"]
                     val target = resolveUnbindTarget(targetArg)
                     if (target == null) {
-                        sender.sendMessage("§c[BV] 未找到与 $targetArg 匹配的玩家、UUID 或 B 站 UID。")
+                        val tag = MessageArg(
+                            "player",
+                            targetArg
+                        )
+                        sender.sendParseLang("admin-unbind-fail",tag)
                         return@execute
                     }
                     val result = BindingService.unbind(target.playerUuid)
                     if (!result.success) {
-                        sender.sendMessage("§c[BV] ${result.message}")
+                        sender.sendPrefixedMessage("&e${result.message}")
                         return@execute
                     }
                     val nameText = target.displayName ?: target.playerUuid
                     val midText = target.bilibiliMid?.toString() ?: "未知 UID"
-                    sender.sendMessage("§a[BV] 已解除玩家 $nameText 与 B 站账号 $midText 的绑定。")
+                    val name = MessageArg(
+                        "player",
+                        nameText
+                    )
+                    val mid = MessageArg(
+                        "user_mid",
+                        midText
+                    )
+                    sender.sendParseLang("admin-unbind-success", name,mid)
                 }
             }
         }
@@ -311,10 +310,10 @@ object BilibiliVideoCommand {
                 execute<ProxyCommandSender> { sender, _, _ ->
                     val all = online.bingzi.bilibili.video.internal.repository.CredentialRepository.findAll()
                     if (all.isEmpty()) {
-                        sender.sendMessage("§e[BV] 当前没有任何凭证记录。")
+                        sender.sendParseLang("token-list-empty")
                         return@execute
                     }
-                    sender.sendMessage("§b[BV] 凭证列表：")
+                    sender.sendParseLang("token-list-head")
                     all.forEach {
                         val statusText = when (it.status) {
                             0 -> "禁用"
@@ -322,7 +321,15 @@ object BilibiliVideoCommand {
                             2 -> "过期"
                             else -> "未知(${it.status})"
                         }
-                        sender.sendMessage(" §7- §f${it.label} §7| UID=${it.bilibiliMid ?: "?"} | 状态=$statusText")
+                        val mid = MessageArg(
+                            "user_mid",
+                            "${it.bilibiliMid ?: "未知"}"
+                        )
+                        val status = MessageArg(
+                            "token_status",
+                            statusText
+                        )
+                        sender.sendParseLang("token-list-info",mid,status)
                     }
                 }
             }
@@ -331,15 +338,36 @@ object BilibiliVideoCommand {
                     execute<ProxyCommandSender> { sender, context, _ ->
                         val label = context["label"]
                         val info = CredentialService.getCredentialInfo(label)
+                        val tokenLabel = MessageArg(
+                            "token_label",
+                            label
+                        )
                         if (info == null) {
-                            sender.sendMessage("§c[BV] 未找到名为 $label 的凭证。")
+                            sender.sendParseLang("token-find-fail",tokenLabel)
                             return@execute
                         }
-                        sender.sendMessage("§b[BV] 凭证详情：$label")
-                        sender.sendMessage(" §7- UID：§f${info.bilibiliMid ?: "未知"}")
-                        sender.sendMessage(" §7- 状态：§f${info.status}")
-                        sender.sendMessage(" §7- lastUsedAt：§f${info.lastUsedAt ?: 0}")
-                        sender.sendMessage(" §7- expiredAt：§f${info.expiredAt ?: 0}")
+
+                        val  mid = MessageArg(
+                            "user_mid",
+                            "${info.bilibiliMid ?: "未知"}"
+                        )
+
+                        val status = MessageArg(
+                            "token_status",
+                            "${info.status}"
+                        )
+
+                        val lastUsedAt = MessageArg(
+                            "token_lastUsedAt",
+                            "${info.lastUsedAt ?: 0}"
+                        )
+
+                        val expiresAt = MessageArg(
+                            "token_expiresAt",
+                            "${info.expiredAt ?: 0}"
+                        )
+
+                        sender.sendParseLang("token-find-success",true,tokenLabel)
                     }
                 }
             }
@@ -348,7 +376,7 @@ object BilibiliVideoCommand {
                     execute<ProxyCommandSender> { sender, context, _ ->
                         val label = context["label"]
                         // 刷新逻辑尚未实现，这里仅做占位与提示。
-                        sender.sendMessage("§e[BV] 凭证刷新流程尚未实现：$label")
+                        sender.sendPrefixedMessage("&e凭证刷新流程尚未实现：$label")
                     }
                 }
             }

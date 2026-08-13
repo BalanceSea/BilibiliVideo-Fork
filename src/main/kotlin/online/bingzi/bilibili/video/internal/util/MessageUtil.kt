@@ -7,6 +7,7 @@ import taboolib.common.platform.ProxyCommandSender
 import taboolib.common.platform.ProxyPlayer
 import taboolib.module.chat.colored
 import taboolib.module.lang.asLangText
+import taboolib.module.lang.asLangTextList
 import taboolib.platform.util.asLangText
 import taboolib.platform.util.asLangTextList
 import taboolib.platform.util.sendMessage
@@ -38,6 +39,17 @@ object MessageUtil {
         var message = asLangText(node)
         message = parseText(message, *args)
         sendMessage("$prefix$message")
+    }
+
+    fun ProxyCommandSender.sendParseLang(node: String, isList: Boolean, vararg args: MessageArg) {
+        val prefix = asLangText("prefix")
+        var texts = asLangTextList(node)
+        texts = parseText(texts, *args)
+        if (isList) {
+            for (text in texts) {
+                sendMessage("$prefix$text")
+            }
+        }
     }
 
     fun Player.sendParseLang(node: String, vararg args: MessageArg) {

@@ -7,16 +7,27 @@ reward:
 
   templates:
     default:
-      description: "完成三连时发放的默认奖励示例\n爱上一只小猪？"
+      # 该介绍会用于显示在 GUI 界面中
+      description: "完成三连时发放的默认奖励示例"
       kether:
         # 仅作为示例，实际脚本可根据需要自行编写
-        - 'tell "&a你已完成该视频的三连，感谢支持！"'
+        - 'tell "&7[&bBiliBili三连奖励&7] &a你已完成该视频的三连，感谢支持！"'
+        # 执行指令(带有papi解析)
+        - 'command papi "give %player_name% diamond 3"'
 
     vip:
-      description: "示例：某些视频使用更高档奖励\n猪猪"
+      description: "特殊视频VIP奖励"
       kether:
         - 'tell "&6你对该视频的支持获得了 VIP 奖励！"'
-
+        - # 执行指令(带有papi解析)
+        - 'command papi "give %player_name% diamond 64"'
+        - 'command papi "give %player_name% gold_ingot 32"'
+    # 活动模板（限时活动）
+    event:
+      description: "活动期间的特殊奖励"
+      kether:
+        - 'tell "&d[活动奖励] &f恭喜完成三连！"'
+        - 'command papi "crate givekey %player_name% activity 1"'
   # 针对特定 bvid 的奖励配置
   videos:
     # 完全自定义的示例：BV1xxxxx 使用 vip 模板
