@@ -18,6 +18,7 @@ object BilibiliVideo : Plugin() {
 
     override fun onActive() {
         info("BilibiliVideo-Fork 插件启动完成！")
+        info("当前插件版本: ${bukkitPlugin.description.version}")
         info("原作者: BingZi-233")
         info("Fork作者: BalanceSea | 山海")
         info("插件交流群: 3643203568")
@@ -42,6 +43,6 @@ object BilibiliVideo : Plugin() {
         } catch (e: Throwable) {
             warning("[BilibiliVideo-Fork] TripleStatusCache 关闭异常: ${e.message}")
         }
-        info("BilibiliVideo 插件禁用完成！")
+        info("BilibiliVideo-Fork 插件禁用完成！")
     }
 }

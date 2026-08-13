@@ -27,23 +27,23 @@ Icons:
   '1':
     type: VIDEO
     display:
-      name: "⭐&6 %bv%"
+      name: "&f⭐&6 %bv%"
       mats: "gold_ingot"
       lore:
         - "&8&m                        "
-        - "📺&b&l 三连状态"
+        - "&f📺&b&l 三连状态"
         - " &7▪ 点赞: &f%status_like%"
         - " &7▪ 收藏: &f%status_favorite%"
         - " &7▪ 投币: &f%status_coin%"
         - " &7▪ 三连: &f%status%"
         - "&8&m                        "
-        - "🎁&b&l 三连奖励"
+        - "&f🎁&b&l 三连奖励"
         - " &7▪ %description%"
         - "&8&m                        "
-        - "✅&b&l 奖励状态"
+        - "&f✅&b&l 奖励状态"
         - " &7▪ %claim_status%"
         - "&8&m                        "
-        - "✔&a&l 左键领取奖励 &7| &r🔗&b&l 右键查看视频链接"
+        - "&f✔&a&l 左键领取奖励 &7| &r🔗&b&l 右键查看视频链接"
         - "&8&m                        "
   'p':
     type: PREVIOUS
@@ -65,7 +65,7 @@ Icons:
   # 玩家信息
   'i':
     display:
-      name: "📋&b&l BiliBiliVideo &7| &f三连奖励"
+      name: "&f📋&b&l BiliBiliVideo &7| &f三连奖励"
       mats: "player_head"
       lore:
         - "&8&m                        "

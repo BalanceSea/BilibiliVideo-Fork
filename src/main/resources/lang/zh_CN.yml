@@ -3,6 +3,29 @@ no-permission: '&c⚠ 你没有权限执行该指令!'
 player-only: '&c⚠ 此命令只能由玩家执行!'
 unknown-command: '&c⚠ 未知指令!'
 
+help-player:
+  - "&b指令帮助"
+  - " &7▪ /bv help &f查看帮助信息"
+  - " &7▪ /bv menu &f打开GUI菜单"
+  - " &7▪ /bv qrcode &f生成 B 站登录二维码地图"
+  - " &7▪ /bv status &f查看账号绑定状态"
+  - " &7▪ /bv triple <bvid> &f检测视频三连状态"
+  - " &7▪ /bv reward <bvid> &f领取三连奖励"
+
+help-admin:
+  - "&b指令帮助"
+  - " &7▪ /bv help &f查看帮助信息"
+  - " &7▪ /bv menu &f打开GUI菜单"
+  - " &7▪ /bv qrcode &f生成 B 站登录二维码地图"
+  - " &7▪ /bv status &f查看账号绑定状态"
+  - " &7▪ /bv triple <bvid> &f检测视频三连状态"
+  - " &7▪ /bv reward <bvid> &f领取三连奖励"
+  - "&b管理员指令帮助"
+  - " &7▪ /bv admin reload &f重载配置文件"
+  - " &7▪ /bv admin unbind <target> &f解除玩家绑定（支持玩家名/UUID/B站UID）"
+  - " &7▪ /bv admin credential list &f列出所有登录凭证"
+  - " &7▪ /bv admin credential info <label> <bvid> &f查看凭证详细信息"
+  - " &7▪ /bv admin credential refresh <label> <bvid> &f刷新指定凭证（待实现）"
 # 账号未绑定
 account-not-bind: '❌&c B站账号未绑定，请通过 &e/bv qrcode &c扫码登录'
 

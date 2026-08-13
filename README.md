@@ -180,6 +180,10 @@
 # 4. 领取奖励
 /bv reward BV1xx411c7mD
 # 系统执行奖励脚本并提示领取成功
+
+# 5. 视频菜单
+/bv menu
+# 傻瓜式一键操作
 ```
 
 ---
@@ -229,116 +233,121 @@ database:
 
 ```yaml
 reward:
-  # 奖励模板定义
-  templates:
-    # 默认模板（通用奖励）
-    default:
-      description: "完成三连时发放的默认奖励"
-      kether:
-        - 'tell "&a[BilibiliVideo] &f感谢你的三连支持！"'
-        - 'command papi "give %player_name% diamond 3"'
+   # 奖励判重策略
+   # PLAYER_AND_BILIBILI - 玩家和 B 站账户同时记录（最严格：同一玩家 + 同一 B 站号只能领一次）
+   # BILIBILI_ONLY       - 仅记录 B 站账户（同一 B 站号只能领一次，玩家换号可重新领）
+   # PLAYER_ONLY         - 仅记录玩家（同一玩家只能领一次，换号无法重新领，默认值，兼容旧版本行为）
+   dedup-strategy: "PLAYER_ONLY"
 
-    # VIP 模板（高价值奖励）
-    vip:
-      description: "特殊视频的 VIP 奖励"
-      kether:
-        - 'tell "&6[BilibiliVideo] &f你获得了 VIP 三连奖励！"'
-        - 'command papi "give %player_name% diamond 10"'
-        - 'command papi "give %player_name% emerald 5"'
+   templates:
+      default:
+         # 该介绍会用于显示在 GUI 界面中
+         description: "完成三连时发放的默认奖励示例"
+         kether:
+            # 仅作为示例，实际脚本可根据需要自行编写
+            - 'tell "&7[&bBiliBili三连奖励&7] &a你已完成该视频的三连，感谢支持！"'
+            # 执行指令(带有papi解析)
+            - 'command papi "give %player_name% diamond 3"'
 
-    # 活动模板（限时活动）
-    event:
-      description: "活动期间的特殊奖励"
-      kether:
-        - 'tell "&d[活动奖励] &f恭喜完成三连！"'
-        - 'command papi "crate givekey %player_name% activity 1"'
+      vip:
+         description: "特殊视频VIP奖励"
+         kether:
+            - 'tell "&6你对该视频的支持获得了 VIP 奖励！"'
+            - # 执行指令(带有papi解析)
+            - 'command papi "give %player_name% diamond 64"'
+            - 'command papi "give %player_name% gold_ingot 32"'
+      # 活动模板（限时活动）
+      event:
+         description: "活动期间的特殊奖励"
+         kether:
+            - 'tell "&d[活动奖励] &f恭喜完成三连！"'
+            - 'command papi "crate givekey %player_name% activity 1"'
+   # 针对特定 bvid 的奖励配置
+   videos:
+      # 完全自定义的示例：BV1xxxxx 使用 vip 模板
+      BV1xxxxx:
+         rewardKey: "vip"
 
-  # 视频与奖励映射
-  videos:
-    # 为特定视频指定奖励模板
-    BV1xx411c7mD:
-      rewardKey: "vip"           # 使用 VIP 模板
+      # 使用活动 event 模板
+      BV2ccccc:
+         rewardKey: "event"
+      # 如果仅配置了 bvid 但不写 rewardKey，将自动回退到 templates.default
+      BV3yyyyy: { }
 
-    BV1yy411c7mE:
-      rewardKey: "event"         # 使用活动模板
-
-    BV1zz411c7mF: {}             # 使用默认模板（可省略 rewardKey）
 ```
 ### GUI配置 (` gui.yml `)
 ````yaml
-
-
 Title: "&fBiliBiliVideo &7| &f三连奖励"
 #不要填写过多视频占位符 请求过多B站会风控！！！
 #不要填写过多视频占位符 请求过多B站会风控！！！
 #不要填写过多视频占位符 请求过多B站会风控！！！
 Layout:
-  - "####i####"
-  - "#1111111#"
-  - "#p#####n#"
+   - "####i####"
+   - "#1111111#"
+   - "#p#####n#"
 
 Icons:
-  # 隔板
-  '#':
-    display:
-      #物品名称
-      name: "&7▪ 我只是个隔板"
-      #物品材质
-      mats: "gray_stained_glass_pane"
-      #物品CustomModelData
-      cmd: '-1'
-      #物品描述
-      lore:
-        - "&7爱上一只小猪?"
+   # 隔板
+   '#':
+      display:
+         #物品名称
+         name: "&7▪ 我只是个隔板"
+         #物品材质
+         mats: "gray_stained_glass_pane"
+         #物品CustomModelData
+         cmd: '-1'
+         #物品描述
+         lore:
+            - "&7爱上一只小猪?"
 
-  # BiliBiliVideo
-  '1':
-    type: VIDEO
-    display:
-      name: "⭐&6 %bv%"
-      mats: "gold_ingot"
-      lore:
-        - "&8&m                        "
-        - "📺&b&l 三连状态"
-        - " &7▪ 点赞: &f%status_like%"
-        - " &7▪ 收藏: &f%status_favorite%"
-        - " &7▪ 投币: &f%status_coin%"
-        - " &7▪ 三连: &f%status%"
-        - "&8&m                        "
-        - "🎁&b&l 三连奖励"
-        - " &7▪ %description%"
-        - "&8&m                        "
-        - "✅&b&l 奖励状态"
-        - " &7▪ %claim_status%"
-        - "&8&m                        "
-        - "✔&a&l 左键领取奖励 &7| &r🔗&b&l 右键查看视频链接"
-        - "&8&m                        "
-  'p':
-    type: PREVIOUS
-    display:
-      name: "&f上一页"
-      mats: "paper"
-      lore:
-        - "&7点击前往上一页"
-        - "&7当前页: &e%page%"
+   # BiliBiliVideo
+   '1':
+      type: VIDEO
+      display:
+         name: "&f⭐&6 %bv%"
+         mats: "gold_ingot"
+         lore:
+            - "&8&m                        "
+            - "&f📺&b&l 三连状态"
+            - " &7▪ 点赞: &f%status_like%"
+            - " &7▪ 收藏: &f%status_favorite%"
+            - " &7▪ 投币: &f%status_coin%"
+            - " &7▪ 三连: &f%status%"
+            - "&8&m                        "
+            - "&f🎁&b&l 三连奖励"
+            - " &7▪ %description%"
+            - "&8&m                        "
+            - "&f✅&b&l 奖励状态"
+            - " &7▪ %claim_status%"
+            - "&8&m                        "
+            - "&f✔&a&l 左键领取奖励 &7| &r🔗&b&l 右键查看视频链接"
+            - "&8&m                        "
+   'p':
+      type: PREVIOUS
+      display:
+         name: "&f上一页"
+         mats: "paper"
+         lore:
+            - "&7点击前往上一页"
+            - "&7当前页: &e%page%"
 
-  'n':
-    type: NEXT
-    display:
-      name: "&f下一页"
-      mats: "paper"
-      lore:
-        - "&7点击前往下一页"
-        - "&7当前页: &e%page%"
-  # 玩家信息
-  'i':
-    display:
-      name: "📋&b&l BiliBiliVideo &7| &f三连奖励"
-      mats: "player_head"
-      lore:
-        - "&8&m                        "
-        - " &7点击查看三连奖励"
-        - "&8&m                        "
+   'n':
+      type: NEXT
+      display:
+         name: "&f下一页"
+         mats: "paper"
+         lore:
+            - "&7点击前往下一页"
+            - "&7当前页: &e%page%"
+   # 玩家信息
+   'i':
+      display:
+         name: "&f📋&b&l BiliBiliVideo &7| &f三连奖励"
+         mats: "player_head"
+         lore:
+            - "&8&m                        "
+            - " &7点击查看三连奖励"
+            - "&8&m                        "
 ````
 ### 语言配置(`lang/zh_CN.yml`)
 ````yaml
@@ -347,6 +356,29 @@ no-permission: '&c⚠ 你没有权限执行该指令!'
 player-only: '&c⚠ 此命令只能由玩家执行!'
 unknown-command: '&c⚠ 未知指令!'
 
+help-player:
+   - "&b指令帮助"
+   - " &7▪ /bv help &f查看帮助信息"
+   - " &7▪ /bv menu &f打开GUI菜单"
+   - " &7▪ /bv qrcode &f生成 B 站登录二维码地图"
+   - " &7▪ /bv status &f查看账号绑定状态"
+   - " &7▪ /bv triple <bvid> &f检测视频三连状态"
+   - " &7▪ /bv reward <bvid> &f领取三连奖励"
+
+help-admin:
+   - "&b指令帮助"
+   - " &7▪ /bv help &f查看帮助信息"
+   - " &7▪ /bv menu &f打开GUI菜单"
+   - " &7▪ /bv qrcode &f生成 B 站登录二维码地图"
+   - " &7▪ /bv status &f查看账号绑定状态"
+   - " &7▪ /bv triple <bvid> &f检测视频三连状态"
+   - " &7▪ /bv reward <bvid> &f领取三连奖励"
+   - "&b管理员指令帮助"
+   - " &7▪ /bv admin reload &f重载配置文件"
+   - " &7▪ /bv admin unbind <target> &f解除玩家绑定（支持玩家名/UUID/B站UID）"
+   - " &7▪ /bv admin credential list &f列出所有登录凭证"
+   - " &7▪ /bv admin credential info <label> <bvid> &f查看凭证详细信息"
+   - " &7▪ /bv admin credential refresh <label> <bvid> &f刷新指定凭证（待实现）"
 # 账号未绑定
 account-not-bind: '❌&c B站账号未绑定，请通过 &e/bv qrcode &c扫码登录'
 
@@ -357,48 +389,51 @@ account-bind-tip: '📱&a 已为你生成二维码，请使用手机扫码完成
 account-bind-success: '✅&a 已成功绑定 B 站账号 &e{user_name} &7(&e{user_mid}&7)'
 # 账号信息
 account-bind-info:
-  - '&8&m                        '
-  - '📋&b&l 当前绑定信息'
-  - ' &7▪ 玩家: &f{player}'
-  - ' &7▪ B 站 UID: &f{user_mid}'
-  - ' &7▪ B 站昵称: &f{user_name}'
-  - '&8&m                        '
+   - '&8&m                        '
+   - '📋&b&l 当前绑定信息'
+   - ' &7▪ 玩家: &f{player}'
+   - ' &7▪ B 站 UID: &f{user_mid}'
+   - ' &7▪ B 站昵称: &f{user_name}'
+   - '&8&m                        '
 
 # 凭证未保存
 token-not-save: '❌&c 尚未为你保存登录凭证，请通过 &e/bv qrcode &c扫码登录'
 
 # 凭证信息
 token-info:
-  - '&8&m                        '
-  - '🔑&b&l 当前凭证信息'
-  - ' &7▪ 标签: &f{token_tag}'
-  - ' &7▪ 状态: &f{token_status}'
-  - ' &7▪ 绑定 UID: &f{user_mid}'
-  - '&8&m                        '
+   - '&8&m                        '
+   - '🔑&b&l 当前凭证信息'
+   - ' &7▪ 标签: &f{token_tag}'
+   - ' &7▪ 状态: &f{token_status}'
+   - ' &7▪ 绑定 UID: &f{user_mid}'
+   - '&8&m                        '
 
 # 凭证列表
-token-info-list: '&7  ▪ &fUID: {user_mid} &7| &f状态: {token_status}'
+token-list-head: '&b凭证列表:'
+token-list-info: '&7  ▪ &fUID: {user_mid} &7| &f状态: {token_status}'
+token-list-empty: '&e当前没有任何凭证记录。'
+
 
 # 凭证查找
 token-find-success:
-  - '&8&m                        '
-  - '🔍&b&l 凭证详情'
-  - ' &7▪ UID: &f{user_mid}'
-  - ' &7▪ 状态: &f{token_status}'
-  - ' &7▪ lastUsedAt: &f{token_lastUsedAt}'
-  - ' &7▪ expiredAt: &f{token_expiredAt}'
-  - '&8&m                        '
+   - '&8&m                        '
+   - '🔍&b&l 凭证详情'
+   - ' &7▪ UID: &f{user_mid}'
+   - ' &7▪ 状态: &f{token_status}'
+   - ' &7▪ lastUsedAt: &f{token_lastUsedAt}'
+   - ' &7▪ expiredAt: &f{token_expiredAt}'
+   - '&8&m                        '
 token-find-fail: '&c❌ 未找到名为 &e{token_label} &c的凭证'
 
 # 视频三连信息
 video-status:
-  - '&8&m                        '
-  - '📺&b&l 视频 &e{bv} &b的三连状态'
-  - ' &7▪ {video_like}'
-  - ' &7▪ {video_coin}'
-  - ' &7▪ {video_favorite}'
-  - ' &7▪ {video_triple}'
-  - '&8&m                        '
+   - '&8&m                        '
+   - '📺&b&l 视频 &e{bv} &b的三连状态'
+   - ' &7▪ {video_like}'
+   - ' &7▪ {video_coin}'
+   - ' &7▪ {video_favorite}'
+   - ' &7▪ {video_triple}'
+   - '&8&m                        '
 
 # 视频点赞
 video-like-success: '👍&a 已点赞'
@@ -437,7 +472,7 @@ gui-video-cant-claim: '❌&c 不可领取'
 gui-video-already-claim: '✔&a 已领取该奖励'
 
 # 解绑提示
-admin-unbind-success: '✅&a 已解除玩家 &e{player} &a与 B 站账号 &e{user_uid} &a的绑定'
+admin-unbind-success: '✅&a 已解除玩家 &e{player} &a与 B 站账号 &e{user_mid} &a的绑定'
 admin-unbind-fail: '❌&c 未找到与 &e{player} &c匹配的玩家、UUID 或 B 站 UID'
 ````
 #### 🎨 Kether 脚本语法示例

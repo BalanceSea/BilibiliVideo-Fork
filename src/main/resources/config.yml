@@ -34,5 +34,8 @@ reward:
     BV1xxxxx:
       rewardKey: "vip"
 
+    # 使用活动 event 模板
+    BV2ccccc:
+      rewardKey: "event"
     # 如果仅配置了 bvid 但不写 rewardKey，将自动回退到 templates.default
-    BV2yyyyy: { }
+    BV3yyyyy: { }

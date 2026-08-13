@@ -68,6 +68,17 @@ object MessageUtil {
             }
         }
     }
+
+    /**
+     * 发送帮助信息
+     */
+    fun ProxyCommandSender.sendHelp(){
+        if (hasPermission("bilibili.video.admin")){
+            sendParseLang("help-admin",true)
+        }else{
+            sendParseLang("help-player",true)
+        }
+    }
     /**
      * 检查是否为玩家
      */

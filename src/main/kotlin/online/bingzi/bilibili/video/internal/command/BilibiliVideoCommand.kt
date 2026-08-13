@@ -12,6 +12,7 @@ import online.bingzi.bilibili.video.internal.service.RewardKetherExecutor
 import online.bingzi.bilibili.video.internal.service.RewardService
 import online.bingzi.bilibili.video.internal.ui.VirtualItemSession
 import online.bingzi.bilibili.video.internal.util.MessageArg
+import online.bingzi.bilibili.video.internal.util.MessageUtil.sendHelp
 import online.bingzi.bilibili.video.internal.util.MessageUtil.sendParseLang
 import online.bingzi.bilibili.video.internal.util.MessageUtil.sendPrefixedMessage
 import org.bukkit.Bukkit
@@ -21,6 +22,7 @@ import taboolib.common.platform.command.CommandBody
 import taboolib.common.platform.command.CommandHeader
 import taboolib.common.platform.command.PermissionDefault
 import taboolib.common.platform.command.mainCommand
+import taboolib.common.platform.command.player
 import taboolib.common.platform.command.subCommand
 import taboolib.expansion.createHelper
 import taboolib.module.lang.Language
@@ -49,7 +51,16 @@ object BilibiliVideoCommand {
 
     @CommandBody
     val main = mainCommand {
-        createHelper()
+        execute<ProxyCommandSender> { sender, _, _ ->
+            sender.sendHelp()
+        }
+    }
+
+    @CommandBody(permission = "bilibili.video.use", permissionDefault = PermissionDefault.TRUE)
+    val help = subCommand {
+        execute<ProxyCommandSender> {sender, _, _ ->
+            sender.sendHelp()
+        }
     }
 
     /**
