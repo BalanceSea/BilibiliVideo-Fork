@@ -1,6 +1,7 @@
 package online.bingzi.bilibili.video.internal.service
 
 import online.bingzi.bilibili.video.internal.config.RewardTemplate
+import org.bukkit.Bukkit
 import org.bukkit.entity.Player
 import taboolib.common.platform.ProxyCommandSender
 import taboolib.common.platform.function.console
@@ -17,7 +18,7 @@ object RewardKetherExecutor {
 
     /**
      * 执行给定奖励模板。
-     *
+     * 默认以控制台执行
      * @param player    领取奖励的玩家
      * @param template  奖励模板
      * @param bvid      视频 BVID
@@ -28,7 +29,7 @@ object RewardKetherExecutor {
         KetherShell.eval(
             source = script,
             options = ScriptOptions.new {
-                sender(player)
+                sender(Bukkit.getConsoleSender())
                 // 允许使用通用与 Bukkit 相关的 action，后续可根据需要调整 namespace
                 namespace(listOf("kether", "bukkit"))
                 vars(
