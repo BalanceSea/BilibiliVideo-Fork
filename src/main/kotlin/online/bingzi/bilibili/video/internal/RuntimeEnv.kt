@@ -14,8 +14,11 @@ import taboolib.common.env.RuntimeDependency
  */
 @RuntimeDependencies(
     RuntimeDependency(
+        /**
+         * 确保reflect动态加载依赖
+         */
         value = "!org.jetbrains.kotlin:kotlin-reflect:2.2.0",
-        test = "!kotlin.reflect.full.KClasses",
+        //test = "!kotlin.reflect.full.KClasses",
         transitive = false
     ),
     RuntimeDependency(

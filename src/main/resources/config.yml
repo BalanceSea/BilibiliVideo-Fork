@@ -13,21 +13,24 @@ reward:
         # 仅作为示例，实际脚本可根据需要自行编写
         - 'tell "&7[&bBiliBili三连奖励&7] &a你已完成该视频的三连，感谢支持！"'
         # 执行指令(带有papi解析)
-        - 'command papi "give %player_name% diamond 3"'
+        # as op/console 以op身份或console执行指令 不填默认是以玩家身份执行
+        - 'command papi "give %player_name% diamond 3" as op'
 
     vip:
       description: "特殊视频VIP奖励"
       kether:
         - 'tell "&6你对该视频的支持获得了 VIP 奖励！"'
-        - # 执行指令(带有papi解析)
-        - 'command papi "give %player_name% diamond 64"'
-        - 'command papi "give %player_name% gold_ingot 32"'
+        # 执行指令(带有papi解析)
+        # as op/console 以op或console执行指令 不填默认是以玩家身份执行
+        - 'command papi "give %player_name% diamond 64" as op'
+        - 'command papi "give %player_name% gold_ingot 32" as console'
     # 活动模板（限时活动）
     event:
       description: "活动期间的特殊奖励"
       kether:
         - 'tell "&d[活动奖励] &f恭喜完成三连！"'
-        - 'command papi "crate givekey %player_name% activity 1"'
+        # as op/console 以op或console执行指令 不填默认是以玩家身份执行
+        - 'command papi "crate givekey %player_name% activity 1" as op'
   # 针对特定 bvid 的奖励配置
   videos:
     # 完全自定义的示例：BV1xxxxx 使用 vip 模板
