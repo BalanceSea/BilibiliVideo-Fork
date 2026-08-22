@@ -15,10 +15,7 @@ import taboolib.common.env.RuntimeDependency
 @RuntimeDependencies(
     RuntimeDependency(
         value = "!org.jetbrains.kotlin:kotlin-reflect:2.2.0",
-        /**
-         * 部分用户出现过了加载测试却在最终没有加载该库
-         */
-        //test = "!kotlin.reflect.full.KClasses",
+        test = "!kotlin.reflect.full.KClasses",
         transitive = false
     ),
     RuntimeDependency(
