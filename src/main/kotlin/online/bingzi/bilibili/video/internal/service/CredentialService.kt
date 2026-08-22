@@ -1,7 +1,6 @@
 package online.bingzi.bilibili.video.internal.service
 
 import online.bingzi.bilibili.video.internal.bilibili.dto.TripleStatusResult
-import online.bingzi.bilibili.video.internal.entity.BoundAccount
 import online.bingzi.bilibili.video.internal.entity.Credential
 import online.bingzi.bilibili.video.internal.http.BilibiliHttpClient
 import online.bingzi.bilibili.video.internal.repository.BoundAccountRepository
@@ -145,7 +144,7 @@ object CredentialService {
                 message = "B 站凭证已被禁用。"
             )
         }
-        if (entity.status == 2 || (entity.expiredAt != null && entity.expiredAt!! > 0 && entity.expiredAt!! < System.currentTimeMillis())) {
+        if (entity.status == 2 || (entity.expiredAt != null && entity.expiredAt > 0 && entity.expiredAt < System.currentTimeMillis())) {
             return TripleCheckResult(
                 code = TripleCheckCode.CREDENTIAL_EXPIRED,
                 message = "B 站凭证已过期。"
@@ -198,7 +197,7 @@ object CredentialService {
                 message = "B 站凭证已被禁用。"
             )
         }
-        if (entity.status == 2 || (entity.expiredAt != null && entity.expiredAt!! > 0 && entity.expiredAt!! < System.currentTimeMillis())) {
+        if (entity.status == 2 || (entity.expiredAt != null && entity.expiredAt > 0 && entity.expiredAt < System.currentTimeMillis())) {
             return TripleCheckResult(
                 code = TripleCheckCode.CREDENTIAL_EXPIRED,
                 message = "B 站凭证已过期。"
@@ -244,7 +243,7 @@ object CredentialService {
                 message = "B 站凭证已被禁用。"
             )
         }
-        if (entity.status == 2 || (entity.expiredAt != null && entity.expiredAt!! > 0 && entity.expiredAt!! < System.currentTimeMillis())) {
+        if (entity.status == 2 || (entity.expiredAt != null && entity.expiredAt > 0 && entity.expiredAt < System.currentTimeMillis())) {
             return TripleCheckResult(
                 code = TripleCheckCode.CREDENTIAL_EXPIRED,
                 message = "B 站凭证已过期。"

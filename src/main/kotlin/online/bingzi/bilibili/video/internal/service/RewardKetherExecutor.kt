@@ -1,15 +1,10 @@
 package online.bingzi.bilibili.video.internal.service
 
 import online.bingzi.bilibili.video.internal.config.RewardTemplate
-import org.bukkit.Bukkit
 import org.bukkit.entity.Player
-import taboolib.common.platform.ProxyCommandSender
-import taboolib.common.platform.function.console
-import taboolib.expansion.fakeOp
 import taboolib.module.chat.colored
 import taboolib.module.kether.KetherShell
 import taboolib.module.kether.ScriptOptions
-import taboolib.platform.type.BukkitCommandSender
 
 /**
  * 使用 Kether 执行奖励模板。
