@@ -36,7 +36,7 @@ taboolib {
         }
     }
     version {
-        taboolib = "6.3.0-75b18a2"
+        taboolib = "6.3.0-4bf7820"
         skipKotlinRelocate = true
     }
 }
