@@ -204,10 +204,10 @@ object VideoGui {
 
         val template = RewardConfigManager.resolveForBvid(bvid).template
 
-        val desc: String = when(template != null) {
-            true -> template.description
-            false -> "§c查询失败"
-        }.toString()
+        val desc: List<String> = when(template != null) {
+                true -> template.description
+                false -> listOf("§c查询失败")
+            }
 
         val likeText = when (status?.liked) {
             true -> "§a已点赞"
@@ -261,17 +261,38 @@ object VideoGui {
 
         val item = buildItem(icon.mats) {
             name = icon.name.replace("%bv%", bvid)
-
-            lore += icon.lore.map { line ->
-                line
-                    .replace("%bv%", bvid)
-                    .replace("%status_like%", likeText)
-                    .replace("%status_coin%", coinText)
-                    .replace("%status_favorite%", favoriteText)
-                    .replace("%status%", tripleText)
-                    .replace("%description%",desc)
-                    .replace("%claim_status%",claimStatusMessage)
+            
+            /*
+             * 支持 description 使用 List<String>
+             */
+            lore.clear()
+            lore.addAll(
+                icon.lore.flatMap { line ->
+                
+                /*
+                * 我也不知道这段我在写什么
+                */
+                if (line.contains("%description%")) {
+                    if (line == "%description%") {
+                        desc
+                    } else {
+                        val prefix = line.substringBefore("%description%")
+                        val suffix = line.substringAfter("%description%")
+                        desc.map { d -> prefix + d + suffix }
+                    }
+                } else {
+                    listOf(
+                    line
+                        .replace("%bv%", bvid)
+                        .replace("%status_like%", likeText)
+                        .replace("%status_coin%", coinText)
+                        .replace("%status_favorite%", favoriteText)
+                        .replace("%status%", tripleText)
+                        .replace("%claim_status%", claimStatusMessage)
+                    )
+                }
             }
+            )
             customModelData = icon.cmd
             colored()
         }

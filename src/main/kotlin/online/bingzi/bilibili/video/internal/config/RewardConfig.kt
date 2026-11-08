@@ -34,7 +34,7 @@ enum class DedupStrategy {
  */
 data class RewardTemplate(
     val key: String,
-    val description: String?,
+    val description: List<String>,
     val lines: List<String>
 )
 
@@ -47,7 +47,7 @@ object RewardConfigManager {
     fun getTemplate(key: String): RewardTemplate? {
         val basePath = "reward.templates.$key"
         val section = file.getConfigurationSection(basePath) ?: return null
-        val description = section.getString("description")
+        val description = section.getStringList("description")
         val scripts = section.getStringList("kether")
         if (scripts.isEmpty()) {
             return null
